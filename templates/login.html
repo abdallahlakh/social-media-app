@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+            margin: 0;
+        }
+
+        form {
+            max-width: 300px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        h4 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    {%if display_user_not_exit %}
+    <p name='display_user_not_exit'>error:this user doesn't exist</p>
+    {% else %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <label for="username">Username:</label><br>
+        <input type="text" name="username" id="username"><br>
+        <label for="password">Password:</label><br>
+        <input type="password" name="password" id="password"><br>
+        <input type="submit" value="Login">
+    </form>
+    {% endif %}
+    <h4><a href="register">Don't have an account? Register here</a></h4>
+</body>
+</html>

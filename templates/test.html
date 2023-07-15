@@ -1,0 +1,468 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Social Media App</title>
+</head>
+<body>
+
+
+
+
+  
+<!--navbar content-->
+<div class="user_navbar">
+  {% if request.user.is_authenticated %}
+    <div class="logout-link">
+      {% if profile.profile_img %}
+      <div class="profile-img-container">
+        <img class="profile-img" src="{{ profile.profile_img.url }}" alt="Profile Image">
+      </div>
+      {% endif %}
+      <div class="user-info">
+        <span class="user-name">{{ profile.username }}</span>
+      </div>
+      <div class="button-container">
+        <a href="/" class="navbar-button">Logout</a>
+        <a href="create_publication" class="navbar-button">Create a publication</a>
+        <a href="view_profile" class="navbar-button">view the profile</a>
+      </div>
+    </div>
+  {% else %}
+    <div class="login-link">
+      <i class="fas fa-sign-in-alt"></i>
+      <a href="logout">Login</a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- end navbar content-->
+
+
+<!--test content-->
+
+
+
+
+
+<div class="Publications-container">
+  <form id="profileForm" method="post" action="{% url 'test' %}">
+    {% csrf_token %}
+
+
+
+    <!--People you may know content-->
+    <div class="info-box-2">
+      <h2>People you may know:</h2>
+      {% for pr in pro %}
+      <div class="comment-container-2">
+        {% if pr.profile_img %}
+        <img class="profilee-img" src="{{ pr.profile_img.url }}" alt="Profile Image">
+        {% endif %}
+        <div class="user-info">
+          <span class="profile-username">{{ pr.username }}</span>
+          <button type="button" name="view-profile" class="view-profile" onclick="myFunction('{{ pr.id }}')"></button>
+          <button type="button" name="follow" class="follow" onclick="myFunction2('{{ pr.id }}')">follow</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <input type="hidden" id="hidden_user_id" name="user_idd">
+    <input type="hidden" id="hidden_user_id2" name="follow">
+    <!--end People you may know content-->
+
+
+
+
+  </form>
+         <!--publication showning content-->
+            {% for Publication in data %}
+             <div class="Publication-container">
+
+
+         <!--publication date and image and description content-->
+               <p class="user">{{ Publication.user }}@    {{ Publication.created }}</p><hr>
+                  <div class="image-container">
+                 <img src="{{ Publication.img.url }}" alt="{{ Publication.title }}" width="70%" height="70%"> <br><br><br><br><br><br>
+               <p class="Publication-description"><span class="the-description-word">The description:</span><br>{{ Publication.description }}</p>
+             <div>
+         <!--end publication date and image and description content-->
+
+
+
+
+
+       <!--like content-->
+          <form method="post" action="{% url 'like' %}">
+            {% csrf_token %}
+            <input type="hidden" name="publication_id" value="{{ Publication.id }}">
+            <button type="submit" class="like-button">
+              <span class="heart-icon">&#x2764;</span> <span class="like-count">{{ Publication.likes_num }}</span>
+            </button>
+          </form>
+        <!--end like content-->
+
+
+
+
+        <!-- making comment content-->
+          <form method="post" action="{% url 'comment' %}">
+            {% csrf_token %}
+            <input type="hidden" name="publication_id" value="{{ Publication.id }}">
+            <textarea id="publication-description" name="comment_box" rows="4" cols="50" placeholder="Enter your comment here"></textarea>
+            <button class="confirm_comment" name="confirm_comment">Confirm Comment</button>
+          </form>
+        <!--end making comment content-->
+
+
+
+
+        <!--comment details content--> 
+          <form method="post" action="{% url 'comments_detail' %}">
+            {% csrf_token %}
+            <button class="view-comment"><span class='see-comments-icon'>&#x25BC;</span></button>
+            <input type="hidden" name="publication_id" value="{{ Publication.id }}">
+            {% if comment_detail_generated and comment_detail_id|stringformat:"s" == Publication.id|stringformat:"s" %}
+            <div class="info-box">
+              <h2>Comments:</h2>
+              {% for comment in comments %}
+              <p class="comment-container">
+                <span id='comment_user'>{{ comment.user }}@:</span>
+                <span id='comment_content'>{{ comment.content }}</span>     
+                <span id='comment_created'>{{ comment.created }}</span>
+                <br><br><br>
+              </p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </form>
+        <!--end comment details content-->
+
+
+
+
+
+
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+
+
+<!--end test content-->
+
+
+
+
+
+
+<script>
+  function myFunction(userId) {
+    document.getElementById("hidden_user_id").value = userId;
+    document.getElementById("profileForm").submit();
+  }
+  function myFunction2(userId) {
+    document.getElementById("hidden_user_id2").value = userId;
+    document.getElementById("profileForm").submit();
+  }
+</script>
+
+</body>
+</html>
+
+<style>
+  /* Body styles */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #fafafa;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Navbar styles */
+  .user_navbar {
+    background-color: black;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .profile-img-container {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
+  }
+
+  .profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    flex-direction: column; /* Stack items vertically */
+    margin-top: 10px;
+    text-align: center; /* Center-align the username */
+  }
+
+  .user-name {
+    margin: 0;
+    position:relative;
+    left:-180px;
+    font-weight: bold;
+    font-size: 14px;
+    color: white;
+  }
+
+  .button-container {
+    display: flex;
+    margin-top: 10px;
+  }
+
+  .navbar-button {
+    display: block;
+    padding: 8px 16px;
+    border-radius: 5px;
+    margin-right: 10px;
+    background-color: #405de6;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+  }
+
+  .navbar-button:hover {
+    background-color: #3c50d8;
+  }
+
+  /* Publications container styles */
+  .Publications-container {
+    padding: 20px;
+    background-color: black;
+  }
+
+  /* People you may know styles */
+  .info-box-2 {
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #ffffff;
+    margin-bottom: 20px;
+  }
+
+  .comment-container-2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .profilee-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .profile-username {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #333333;
+    position:relative;
+    top:30px;
+  }
+
+  /* Publication styles */
+  .Publication-container {
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #ffffff;
+    margin-bottom: 20px;
+  }
+
+  .user {
+    margin: 0;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333333;
+  }
+
+  .image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .Publication-description {
+    margin: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #333333;
+    line-height: 1.5;
+  }
+
+  .the-description-word {
+    font-weight: bold;
+  }
+
+  /* Like button styles */
+  .like-button {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    border: 1px solid #e6e6e6;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .like-button:hover {
+    background-color: #f9f9f9;
+  }
+
+  .heart-icon {
+    font-size: 16px;
+    color: #ed4956;
+    margin-right: 5px;
+  }
+
+  .like-count {
+    font-size: 14px;
+    margin-left: 5px;
+    color: #333333;
+  }
+
+  /* Comment styles */
+  .confirm_comment {
+    background-color: #405de6;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .confirm_comment:hover {
+    background-color: #3c50d8;
+  }
+
+  textarea {
+    background-color: #f5f5f5;
+    border: 1px solid #e6e6e6;
+    border-radius: 5px;
+    padding: 8px;
+    font-size: 14px;
+    width: 100%;
+    margin-top: 10px;
+    resize: none;
+  }
+
+  .view-comment {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .see-comments-icon {
+    font-size: 14px;
+    color: #333333;
+  }
+
+  .info-box {
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #f5f5f5;
+  }
+
+  .info-box h2 {
+    font-size: 16px;
+    margin: 0 0 10px;
+    color: #333333;
+  }
+
+  .comment-container {
+    margin-bottom: 10px;
+  }
+
+  #comment_user {
+    font-weight: bold;
+    color: #405de6;
+    margin-right: 5px;
+  }
+
+  #comment_content {
+    margin-left: 10px;
+    color: #333333;
+  }
+
+  #comment_created {
+    margin-left: 10px;
+    font-size: 12px;
+    color: #999999;
+  }
+
+  /* Login link styles */
+  .login-link {
+    display: flex;
+    align-items: center;
+    color: #405de6;
+    font-weight: bold;
+    font-size: 14px;
+    text-decoration: none;
+    margin-left: 10px;
+  }
+
+  .login-link i {
+    margin-right: 5px;
+  }
+
+  /* View profile button styles */
+  .view-profile {
+    background-color:transparent;
+    color: #ffffff;
+    width: 200px;
+    height: 30px;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 10px;
+    position:relative;
+    left:-140px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .follow {
+    background-color: #405de6;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .follow:hover {
+    background-color: #3c50d8;
+  }
+</style>
