@@ -138,7 +138,7 @@ def test(request):
            
     #this is processing of view the profile user clicked operation 
     #here we verifiy if the request contains follow key with the corresponding user id value that we want to see his profile       
-    if request.POST.get('user_idd')!="" and request.POST.get('user_idd')!=None:
+    if (request.POST.get('user_idd')!="" and request.POST.get('user_idd')!=None)  :
         user_id = request.POST.get('user_idd')
         profile = Profile.objects.get(id=user_id)    
         return render(request, 'view_profile.html', {'profile': profile})    
@@ -165,7 +165,7 @@ def comment(request):
         textarea_content = request.POST.get('comment_box')
         #this is the case if comment is empty the other we create a row in comment table 
         if textarea_content=="":
-            return redirect('/')
+            return redirect('test')
         else:
             publication_id = request.POST.get('publication_id')
             comment = Comment.objects.create(publication_id=publication_id, user_id=request.user.id,content=textarea_content,created=datetime)
@@ -236,3 +236,38 @@ def view_profile(request):
     if request.method == "GET":
        profile=Profile.objects.get(user_id=request.user.id)
        return render(request, 'view.html',{'profile':profile})
+   
+   
+#this fonction is used in search content of profiles   
+def autocomplete(request):
+#this part is used to display the profile of person that we click it
+    if (request.GET.get('user_idd2')!="" and request.GET.get('user_idd2')!=None)  :
+        user_id = request.GET.get('user_idd2')
+        profile = Profile.objects.get(id=user_id)    
+        return render(request, 'view_profile.html', {'profile': profile})  
+#this part is used to fetch the value written by user in query format   
+    query = request.GET.get('query', '')
+#the url is used to display to the user the users fetched from database or no      
+    url = request.build_absolute_uri()
+    #first part when the user is not executing querie by clicking in search button  
+    if url=="http://127.0.0.1:8000/test":
+        activate_suggestions=False
+        suggestions = Profile.objects.filter(username__icontains=query)
+        comment_box_generated = False
+        data = Publication.objects.all().order_by('-id')
+        all_profiles = Profile.objects.exclude(user_id=request.user.id)
+        random_profiles = random.sample(list(all_profiles), 3)
+        profile = Profile.objects.get(user_id=request.user.id)
+        follow=Follow.objects.all()
+        return render(request, 'test.html', {'data': data, 'comment_box_generated': comment_box_generated, 'profile': profile, 'pro': random_profiles,'follow':follow,'suggestions': suggestions,'activate_suggestions':activate_suggestions})
+    #first part when the user is  executing querie by clicking in search button
+    else:
+        activate_suggestions=True
+        suggestions = Profile.objects.filter(username__icontains=query)
+        comment_box_generated = False
+        data = Publication.objects.all().order_by('-id')
+        all_profiles = Profile.objects.exclude(user_id=request.user.id)
+        random_profiles = random.sample(list(all_profiles), 3)
+        profile = Profile.objects.get(user_id=request.user.id)
+        follow=Follow.objects.all()
+        return render(request, 'test.html', {'data': data, 'comment_box_generated': comment_box_generated, 'profile': profile, 'pro': random_profiles,'follow':follow,'suggestions': suggestions,'activate_suggestions':activate_suggestions})
