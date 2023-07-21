@@ -102,7 +102,7 @@
          <!--publication date and image and description content-->
                <p class="user">{{ Publication.user }}@    {{ Publication.created }}</p><hr>
                   <div class="image-container">
-                 <img src="{{ Publication.img.url }}" alt="{{ Publication.title }}" width="70%" height="70%"> <br><br><br><br><br><br>
+                 <img src="{{ Publication.img.url }}" alt="{{ Publication.title }}" width="50%" height="70%"> <br><br><br><br><br><br>
                <p class="Publication-description"><span class="the-description-word">The description:</span><br>{{ Publication.description }}</p>
              <div>
          <!--end publication date and image and description content-->
@@ -128,7 +128,7 @@
           <form method="post" action="{% url 'comment' %}">
             {% csrf_token %}
             <input type="hidden" name="publication_id" value="{{ Publication.id }}">
-            <textarea id="publication-description" name="comment_box" rows="4" cols="50" placeholder="Enter your comment here"></textarea>
+            <textarea id="publication-description" name="comment_box" rows="1" cols="1" placeholder="Enter your comment here"></textarea>
             <button class="confirm_comment" name="confirm_comment">Confirm Comment</button>
           </form>
         <!--end making comment content-->
@@ -199,18 +199,19 @@
 <style>
   /* Body styles */
   .search-content {
-    position: relative;
-    top: 10px;
-    margin-bottom: 20px;
+    background-color:black;
     text-align: center;
+    height:100px;
+    position:relative;
+    top:5px;
   }
 
   #search-input {
+    position:relative;
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #e6e6e6;
     width: 200px;
-    margin-right: 10px;
   }
  .ss{
   background-color: #405de6;
@@ -226,6 +227,7 @@
     background-color: #405de6;
     color: #ffffff;
     border: none;
+    position:relatives
     padding: 8px 16px;
     border-radius: 5px;
     font-size: 14px;
@@ -249,7 +251,7 @@
     background-color: gray;
     color: #ffffff;
     border: none;
-    padding: 8px 16px;
+
     font-size: 14px;
     cursor: pointer;
     width:210px;
@@ -278,7 +280,6 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
-    padding: 10px;
     position:relative;
    
   }
@@ -302,7 +303,6 @@
     display: flex;
     align-items: center;
     flex-direction: column; /* Stack items vertically */
-    margin-top: 10px;
     text-align: center; /* Center-align the username */
   }
 
@@ -317,7 +317,6 @@
 
   .button-container {
     display: flex;
-    margin-top: 10px;
   }
 
   .navbar-button {
@@ -348,6 +347,9 @@
     border: 1px solid #e6e6e6;
     border-radius: 8px;
     padding: 20px;
+    width:300px;
+    position:relative;
+    left:1200px;
     background-color: #ffffff;
     margin-bottom: 20px;
   }
@@ -373,13 +375,19 @@
     position:relative;
     top:30px;
   }
+  #publication-description{
+    width:680px;
+  }
 
   /* Publication styles */
   .Publication-container {
     border: 1px solid #e6e6e6;
     border-radius: 8px;
-    padding: 20px;
-    background-color: #ffffff;
+    width:700px;
+    position:relative;
+    top:-500px;
+    left:330px;
+    background-color: white;
     margin-bottom: 20px;
   }
 
@@ -401,9 +409,12 @@
   .Publication-description {
     margin: 0;
     margin-bottom: 10px;
-    font-size: 14px;
+    font-size: 20px;
+    position:relative;
+    top:-100px;
     color: #333333;
     line-height: 1.5;
+    word-wrap: break-word;
   }
 
   .the-description-word {
